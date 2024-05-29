@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -49,6 +50,28 @@ router.post('/login', async (req, res) => {
     const token = jwt.sign({ userId: user._id }, jwtSecret, { expiresIn: '1h' });
 
     res.status(200).json({ message: 'User authenticated successfully', token });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// Save recipe to user's profile
+router.post('/save-recipe', auth, async (req, res) => {
+  try {
+    const userId = req.user;
+    const { recipeId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.savedRecipes.includes(recipeId)) {
+      user.savedRecipes.push(recipeId);
+      await user.save();
+    }
+
+    res.json({ message: 'Recipe saved successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
