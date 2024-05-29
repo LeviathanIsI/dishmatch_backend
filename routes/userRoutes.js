@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
 // Save recipe to user's profile
 router.post('/save-recipe', auth, async (req, res) => {
   try {
-    const userId = req.user;
+    const userId = req.user.userId;
     const { recipeId } = req.body;
 
     const user = await User.findById(userId);
@@ -80,13 +80,19 @@ router.post('/save-recipe', auth, async (req, res) => {
 // Fetch matched recipes for logged-in user
 router.get('/matched-recipes', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user).populate('savedRecipes');
+    const user = await User.findById(req.user.userId)
+      .populate({
+        path: 'savedRecipes',
+        populate: { path: 'creator', model: 'User', select: 'username' }
+      });
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
     res.json(user.savedRecipes);
   } catch (error) {
+    console.error('Error fetching matched recipes:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });
