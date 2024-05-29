@@ -1,11 +1,12 @@
 const express = require('express');
 const Recipe = require('../models/Recipe');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// Create a new recipe
-router.post('/', async (req, res) => {
+// Create a new recipe (protected route)
+router.post('/', auth, async (req, res) => {
   const { name, cuisine, ingredients, creatorId } = req.body;
 
   try {
@@ -22,8 +23,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get all recipes
-router.get('/', async (req, res) => {
+// Get all recipes (protected route)
+router.get('/', auth, async (req, res) => {
   try {
     const recipes = await Recipe.find().populate('creator', 'username');
     res.status(200).json(recipes);

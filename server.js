@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -9,6 +10,7 @@ const recipeRoutes = require('./routes/recipeRoutes');
 
 const app = express();
 
+app.use(cors()); // Enable CORS
 app.use(express.json());
 
 // Connect to MongoDB
