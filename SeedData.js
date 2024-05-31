@@ -8,7 +8,7 @@ mongoose.connect('mongodb+srv://leviathan:Josh1987@cluster0.atr55ns.mongodb.net/
 });
 
 // Sample user ID
-const userId = '6656935cd90ba841963ac2c1';
+const userId = '665a426382d4efa558607d00';
 
 // Seed data for recipes
 const recipes = [

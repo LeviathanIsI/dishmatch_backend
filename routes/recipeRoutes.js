@@ -2,36 +2,35 @@ const express = require('express');
 const Recipe = require('../models/Recipe');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
-const multer = require('multer');
-const path = require('path');
 
 const router = express.Router();
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage });
-
 // Create a new recipe (protected route)
-router.post('/', auth, async (req, res) => {
-  const { name, cuisine, ingredients, creatorId } = req.body;
+router.post('/create', auth, async (req, res) => {
+  const { name, cuisine, ingredients, description, timeToMake } = req.body;
+
+  if (!name || !cuisine || !ingredients || !description || !timeToMake) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
   try {
-    const creator = await User.findById(creatorId);
-    if (!creator) {
-      return res.status(400).json({ message: 'Invalid creator ID' });
-    }
-
-    const recipe = new Recipe({ name, cuisine, ingredients, creator: creatorId });
+    const recipe = new Recipe({
+      name,
+      cuisine,
+      ingredients: ingredients.split(','),
+      description,
+      timeToMake,
+      creator: req.user.userId,
+    });
     await recipe.save();
-    creator.myRecipes.push(recipe._id); // Add recipe to user's created recipes
-    await creator.save();
+
+    // Find the user by ID and update their "myRecipes" array
+    await User.findByIdAndUpdate(
+      req.user.userId,
+      { $push: { myRecipes: recipe._id } },
+      { new: true }
+    );
+
     res.status(201).json({ message: 'Recipe created successfully', recipe });
   } catch (error) {
     console.error('Error creating recipe:', error);
@@ -67,7 +66,7 @@ router.get('/random', auth, async (req, res) => {
 router.post('/add', auth, async (req, res) => {
   const { recipeId } = req.body;
   try {
-    const user = await User.findById(req.user.userId); // Correcting the way to get userId from req.user
+    const user = await User.findById(req.user.userId);
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
@@ -90,28 +89,7 @@ router.get('/my-recipes', auth, async (req, res) => {
     const recipes = await Recipe.find({ creator: req.user.userId }).populate('creator', 'username');
     res.status(200).json(recipes);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
-});
-
-// Create a new recipe with image upload (protected route)
-router.post('/create', auth, upload.single('image'), async (req, res) => {
-  const { name, cuisine, ingredients, description, timeToMake } = req.body;
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
-
-  try {
-    const recipe = new Recipe({
-      name,
-      cuisine,
-      ingredients: ingredients.split(','),
-      description,
-      timeToMake,
-      imageUrl,
-      creator: req.user.userId,
-    });
-    await recipe.save();
-    res.status(201).json({ message: 'Recipe created successfully', recipe });
-  } catch (error) {
+    console.error('Error fetching user recipes:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 });
