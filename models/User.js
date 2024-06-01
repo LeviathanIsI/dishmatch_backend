@@ -28,6 +28,24 @@ const userSchema = new mongoose.Schema({
       ref: 'Recipe',
     },
   ],
+  preferences: {
+    likedCreators: {
+      type: Boolean,
+      default: false,
+    },
+    cuisinePreferences: {
+      type: [String],
+      default: [],
+    },
+    timeCommitment: {
+      type: [String],
+      default: [],
+    },
+    mealTime: {
+      type: [String],
+      default: [],
+    },
+  },
 });
 
 // Hash the password before saving the user

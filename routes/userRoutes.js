@@ -97,4 +97,43 @@ router.get('/matched-recipes', auth, async (req, res) => {
   }
 });
 
+router.put('/preferences', auth, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { likedCreators, cuisinePreferences, timeCommitment, mealTime } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.preferences = {
+      likedCreators,
+      cuisinePreferences,
+      timeCommitment,
+      mealTime
+    };
+
+    await user.save();
+
+    res.json({ message: 'Preferences updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// Fetch user preferences
+router.get('/preferences', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ preferences: user.preferences });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+
 module.exports = router;
