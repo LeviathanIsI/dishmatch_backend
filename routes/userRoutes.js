@@ -1,18 +1,19 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
+const { OAuth2Client } = require('google-auth-library');
 const auth = require('../middleware/auth');
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 const router = express.Router();
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Secret key for JWT
-const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
+const jwtSecret = process.env.JWT_SECRET;
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+// Google OAuth client
+const client = new OAuth2Client(googleClientId);
 
 // Register a new user
 router.post('/register', async (req, res) => {
@@ -60,36 +61,36 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Google OAuth route
+// Google OAuth login
 router.post('/auth/google', async (req, res) => {
   const { token } = req.body;
-
   try {
     const ticket = await client.verifyIdToken({
       idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+      audience: googleClientId,
     });
-
     const payload = ticket.getPayload();
-    const { sub, email, name } = payload;
+    const { email, sub: googleId, name: username } = payload;
 
-    let user = await User.findOne({ googleId: sub });
+    let user = await User.findOne({ email });
     if (!user) {
-      user = new User({
-        googleId: sub,
-        email,
-        username: name,
-      });
+      user = new User({ email, username, googleId });
       await user.save();
     }
 
-    const jwtToken = jwt.sign({ userId: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const jwtToken = jwt.sign({ userId: user._id, username: user.username }, jwtSecret, { expiresIn: '1h' });
+
     res.json({ token: jwtToken, username: user.username });
   } catch (error) {
-    console.error('Google login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error('Google OAuth error:', error);
+    res.status(500).json({ message: 'Google OAuth error', error });
   }
 });
+
+// Other routes...
+
+module.exports = router;
+
 
 // Save recipe to user's profile
 router.post('/save-recipe', auth, async (req, res) => {
