@@ -1,10 +1,15 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const router = express.Router();
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Secret key for JWT
 const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -55,6 +60,37 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Google OAuth route
+router.post('/auth/google', async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { sub, email, name } = payload;
+
+    let user = await User.findOne({ googleId: sub });
+    if (!user) {
+      user = new User({
+        googleId: sub,
+        email,
+        username: name,
+      });
+      await user.save();
+    }
+
+    const jwtToken = jwt.sign({ userId: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token: jwtToken, username: user.username });
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Save recipe to user's profile
 router.post('/save-recipe', auth, async (req, res) => {
   try {
@@ -97,6 +133,7 @@ router.get('/matched-recipes', auth, async (req, res) => {
   }
 });
 
+// Update user preferences
 router.put('/preferences', auth, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -134,6 +171,5 @@ router.get('/preferences', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error', error });
   }
 });
-
 
 module.exports = router;

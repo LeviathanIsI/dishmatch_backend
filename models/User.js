@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
   myRecipes: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -29,22 +34,10 @@ const userSchema = new mongoose.Schema({
     },
   ],
   preferences: {
-    likedCreators: {
-      type: Boolean,
-      default: false,
-    },
-    cuisinePreferences: {
-      type: [String],
-      default: [],
-    },
-    timeCommitment: {
-      type: [String],
-      default: [],
-    },
-    mealTime: {
-      type: [String],
-      default: [],
-    },
+    likedCreators: Boolean,
+    cuisinePreferences: [String],
+    timeCommitment: [String],
+    mealTime: [String],
   },
 });
 
