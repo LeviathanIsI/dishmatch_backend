@@ -1,8 +1,65 @@
-# DishMatch Backend
+<!-- PROJECT SHIELDS -->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
 
-This is the backend for the DishMatch application, built with Node.js and Express.
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/your-repo-url">
+    <img src="https://i.imgur.com/uSgxvre.png" alt="Logo" width="80" height="80">
+  </a>
 
-## Setup
+  <h3 align="center">DishMatch Backend</h3>
+
+  <p align="center">
+    Backend for the DishMatch application, built with Node.js and Express.
+  </p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#environment-variables">Environment Variables</a></li>
+        <li><a href="#running-the-server">Running the Server</a></li>
+      </ul>
+    </li>
+    <li><a href="#endpoints">Endpoints</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+The backend for DishMatch is built with Node.js and Express to handle the API requests and manage the application's data.
+
+### Built With
+
+- ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+- ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+- ![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
@@ -12,15 +69,16 @@ This is the backend for the DishMatch application, built with Node.js and Expres
 ### Installation
 
 1. Clone the repository:
-   ```bash
+   ```sh
    git clone <repository-url>
-
-Navigate to the backend directory:
-bash
+   
+2. Navigate to the backend directory:
+sh
 Copy code
 cd DishMatch/backend
-Install the dependencies:
-bash
+
+2. Install the dependencies:
+sh
 Copy code
 npm install
 Environment Variables
@@ -36,7 +94,7 @@ PORT=5000
 Running the Server
 Start the server by running:
 
-bash
+sh
 Copy code
 npm start
 The server will be running on http://localhost:5000.
@@ -78,3 +136,8 @@ Update Preferences
 PUT /users/preferences
 Requires authentication
 Request body: { "likedCreators": true, "cuisinePreferences": [], "timeCommitment": [], "mealTime": [] }
+License
+Distributed under the MIT License. See LICENSE for more information.
+
+Contact
+Project Link: https://github.com/your-repo-url
