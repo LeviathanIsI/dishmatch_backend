@@ -73,33 +73,27 @@ To get a local copy up and running, follow these simple steps.
    git clone https://github.com/LeviathanIsI/dishmatch_backend.git
    
 2. Navigate to the backend directory:
-sh
-Copy code
 cd DishMatch/backend
 
 2. Install the dependencies:
-sh
-Copy code
 npm install
 Environment Variables
 Create a .env file in the root of the backend directory and add the following environment variables:
 
-env
-Copy code
+### Environment Variables
 MONGODB_URI="your_mongodb_uri"
 GOOGLE_CLIENT_ID="your_google_client_id"
 GOOGLE_CLIENT_SECRET="your_google_client_secret"
 JWT_SECRET="your_jwt_secret"
 PORT=5000
-Running the Server
+
+### Running the Server
 Start the server by running:
 
-sh
-Copy code
-npm start
+node server.js
 The server will be running on http://localhost:5000.
 
-Endpoints
+### Endpoints
 Auth
 Register
 
@@ -113,6 +107,7 @@ Google OAuth
 
 POST /auth/google
 Request body: { "token": "google_token_id" }
+
 Recipes
 Get My Recipes
 
