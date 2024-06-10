@@ -70,7 +70,7 @@ To get a local copy up and running, follow these simple steps.
 
 1. Clone the repository:
    ```sh
-   git clone <repository-url>
+   git clone https://github.com/LeviathanIsI/dishmatch_backend.git
    
 2. Navigate to the backend directory:
 sh
