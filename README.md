@@ -1,13 +1,6 @@
 <!-- PROJECT SHIELDS -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/your-repo-url">
-    <img src="https://i.imgur.com/uSgxvre.png" alt="Logo" width="80" height="80">
-  </a>
-
   <h3 align="center">DishMatch Backend</h3>
 
   <p align="center">
