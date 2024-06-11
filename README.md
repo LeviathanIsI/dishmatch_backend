@@ -73,9 +73,13 @@ Create a .env file in the root of the backend directory and add the following en
 
 ### Environment Variables
 MONGODB_URI="your_mongodb_uri"
+
 GOOGLE_CLIENT_ID="your_google_client_id"
+
 GOOGLE_CLIENT_SECRET="your_google_client_secret"
+
 JWT_SECRET="your_jwt_secret"
+
 PORT=5000
 
 ### Running the Server
